@@ -1,1 +1,1849 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Butter & Cup Café — Version 2: Sweet Story</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,700&family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #F2A7B3;
+    --rose-pale: #FCE8EC;
+    --rose-deep: #D97A8A;
+    --rose-blush: #FAD4DB;
+    --petal: #FDF0F3;
+    --cream: #FBF5EE;
+    --warm: #FFFCF9;
+    --gold: #C8956C;
+    --gold-light: #E8C4A0;
+    --mocha: #5C3D2E;
+    --mocha-deep: #3A2218;
+    --sand: #F0E6D8;
+    --text: #2A1810;
+    --text-soft: #7A5548;
+    --text-muted: #B89080;
+    --border: rgba(242,167,179,0.3);
+    --glow: 0 0 60px rgba(242,167,179,0.2);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    font-family:'Outfit', sans-serif;
+    background: var(--warm);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position:fixed; width:12px; height:12px;
+    background: var(--rose-deep);
+    border-radius:50%;
+    pointer-events:none; z-index:9999;
+    transition: transform 0.1s, opacity 0.3s;
+    transform: translate(-50%,-50%);
+  }
+
+  .cursor-trail {
+    position:fixed; width:30px; height:30px;
+    border: 1.5px solid var(--rose);
+    border-radius:50%;
+    pointer-events:none; z-index:9998;
+    transform: translate(-50%,-50%);
+    transition: left 0.15s ease, top 0.15s ease;
+    opacity:0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    padding: 0 5%;
+    height:72px;
+    display:flex; align-items:center; justify-content:space-between;
+    transition: background 0.4s, box-shadow 0.4s;
+  }
+
+  nav.scrolled {
+    background: rgba(251,245,238,0.96);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 2px 30px rgba(92,61,46,0.06);
+  }
+
+  .nav-logo {
+    font-family:'Playfair Display', serif;
+    font-size:1.5rem; font-weight:700;
+    color: var(--mocha-deep);
+    letter-spacing:-0.02em;
+    display:flex; align-items:center; gap:0.4rem;
+  }
+
+  .nav-logo .amp { color:var(--rose-deep); font-style:italic; }
+
+  .nav-pill {
+    display:flex; align-items:center; gap:0.3rem;
+    background: rgba(242,167,179,0.15);
+    border: 1px solid var(--border);
+    border-radius:40px;
+    padding:0.2rem;
+  }
+
+  .nav-pill a {
+    padding:0.5rem 1.1rem;
+    font-size:0.82rem; font-weight:500;
+    color:var(--text-soft); text-decoration:none;
+    border-radius:30px;
+    transition: all 0.25s;
+    letter-spacing:0.01em;
+  }
+
+  .nav-pill a:hover { background:var(--rose-pale); color:var(--mocha); }
+  .nav-pill a.active { background:var(--mocha-deep); color:white; }
+
+  .nav-right {
+    display:flex; align-items:center; gap:1rem;
+  }
+
+  .nav-icon-btn {
+    width:38px; height:38px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--rose-pale); border-radius:50%;
+    font-size:1rem; cursor:pointer;
+    transition: all 0.25s; border:none;
+  }
+
+  .nav-icon-btn:hover { background:var(--rose); transform:scale(1.05); }
+
+  .hamburger-new {
+    display:none; background:none; border:none; cursor:pointer;
+    flex-direction:column; gap:4px;
+  }
+
+  .hamburger-new span {
+    display:block; height:2px; background:var(--mocha-deep);
+    transition:0.3s;
+    border-radius:2px;
+  }
+
+  .hamburger-new span:nth-child(1) { width:24px; }
+  .hamburger-new span:nth-child(2) { width:18px; }
+  .hamburger-new span:nth-child(3) { width:24px; }
+
+  /* ── HERO ── */
+  #home {
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+    padding-top:72px;
+  }
+
+  .hero-bg {
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse at 60% 50%, var(--rose-blush) 0%, var(--cream) 50%, var(--sand) 100%);
+  }
+
+  .hero-blob {
+    position:absolute;
+    border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;
+    filter: blur(60px); opacity:0.4;
+    animation: morph 8s ease-in-out infinite;
+  }
+
+  .hero-blob-1 {
+    width:400px; height:400px;
+    background: var(--rose);
+    top:-100px; right:10%;
+    animation-delay:0s;
+  }
+
+  .hero-blob-2 {
+    width:300px; height:300px;
+    background: var(--gold-light);
+    bottom:10%; left:5%;
+    animation-delay:-4s;
+  }
+
+  @keyframes morph {
+    0%,100% { border-radius:60% 40% 70% 30% / 50% 60% 40% 70%; }
+    50% { border-radius:40% 60% 30% 70% / 60% 40% 70% 30%; }
+  }
+
+  .hero-content {
+    position:relative; z-index:2;
+    display:grid; grid-template-columns:1fr 1fr;
+    align-items:center; gap:4rem;
+    max-width:1200px; width:90%; margin:0 auto;
+  }
+
+  .hero-text { }
+
+  .hero-tag {
+    display:inline-flex; align-items:center; gap:0.6rem;
+    background:white; border:1px solid var(--border);
+    padding:0.4rem 1rem; border-radius:30px;
+    font-size:0.75rem; font-weight:600;
+    color:var(--mocha); letter-spacing:0.06em;
+    text-transform:uppercase;
+    margin-bottom:2rem;
+    box-shadow:0 4px 20px rgba(242,167,179,0.15);
+    animation: fadeSlideUp 0.8s ease both;
+  }
+
+  .hero-tag-dot { width:8px; height:8px; background:var(--rose-deep); border-radius:50%; animation: pulse 2s infinite; }
+
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+
+  .hero-h1 {
+    font-family:'Playfair Display', serif;
+    font-size:clamp(3rem, 5.5vw, 5rem);
+    font-weight:900; line-height:1.05;
+    color:var(--mocha-deep);
+    margin-bottom:1.5rem;
+    animation: fadeSlideUp 0.8s 0.1s ease both;
+  }
+
+  .hero-h1 .line-italic {
+    font-style:italic; color:var(--rose-deep);
+    display:block;
+  }
+
+  .hero-h1 .line-normal { display:block; }
+
+  .hero-p {
+    font-family:'Fraunces', serif;
+    font-size:1.1rem; line-height:1.8;
+    color:var(--text-soft); max-width:420px;
+    margin-bottom:2.5rem;
+    animation: fadeSlideUp 0.8s 0.2s ease both;
+  }
+
+  .hero-btns {
+    display:flex; gap:1rem; flex-wrap:wrap;
+    animation: fadeSlideUp 0.8s 0.3s ease both;
+  }
+
+  .btn-rose {
+    background: linear-gradient(135deg, var(--rose-deep), var(--rose));
+    color:white; padding:0.85rem 2rem;
+    border:none; border-radius:50px;
+    font-family:'Outfit',sans-serif; font-size:0.85rem;
+    font-weight:600; letter-spacing:0.04em;
+    cursor:pointer; text-decoration:none;
+    display:inline-flex; align-items:center; gap:0.6rem;
+    box-shadow:0 8px 30px rgba(217,122,138,0.35);
+    transition:all 0.3s; position:relative; overflow:hidden;
+  }
+
+  .btn-rose::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity:0; transition:opacity 0.3s;
+  }
+
+  .btn-rose:hover { transform:translateY(-3px); box-shadow:0 14px 40px rgba(217,122,138,0.45); }
+  .btn-rose:hover::before { opacity:1; }
+
+  .btn-ghost {
+    background:transparent; color:var(--mocha-deep);
+    padding:0.85rem 2rem;
+    border:2px solid rgba(92,61,46,0.2); border-radius:50px;
+    font-family:'Outfit',sans-serif; font-size:0.85rem;
+    font-weight:600; letter-spacing:0.04em;
+    cursor:pointer; text-decoration:none;
+    display:inline-flex; align-items:center; gap:0.6rem;
+    transition:all 0.3s;
+  }
+
+  .btn-ghost:hover { border-color:var(--mocha-deep); background:var(--mocha-deep); color:white; transform:translateY(-2px); }
+
+  /* Hero Visual */
+  .hero-visual {
+    position:relative; height:560px;
+    animation: fadeSlideUp 1s 0.2s ease both;
+  }
+
+  .hero-circle-bg {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:420px; height:420px; border-radius:50%;
+    background: radial-gradient(circle, var(--rose-pale) 0%, transparent 70%);
+    animation: spin-slow 20s linear infinite;
+  }
+
+  @keyframes spin-slow { to { transform:translate(-50%,-50%) rotate(360deg); } }
+
+  .hero-main-img {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:280px; height:380px; object-fit:cover;
+    border-radius:140px;
+    box-shadow:0 30px 80px rgba(92,61,46,0.2);
+    z-index:2;
+  }
+
+  .hero-float {
+    position:absolute; z-index:3;
+    background:white; border-radius:16px;
+    padding:1rem 1.2rem;
+    box-shadow:0 20px 60px rgba(92,61,46,0.12);
+    border:1px solid var(--border);
+  }
+
+  .hero-float-1 {
+    top:60px; left:10px;
+    animation: float1 4s ease-in-out infinite;
+  }
+
+  .hero-float-2 {
+    bottom:80px; right:0;
+    animation: float2 4.5s ease-in-out infinite;
+  }
+
+  .hero-float-3 {
+    top:50%; right: -10px;
+    transform:translateY(-50%);
+    animation: float1 3.5s 1s ease-in-out infinite;
+  }
+
+  @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(10px)} }
+
+  .float-emoji { font-size:1.6rem; margin-bottom:0.3rem; }
+  .float-label { font-size:0.68rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; font-weight:600; }
+  .float-value { font-family:'Playfair Display',serif; font-size:1rem; color:var(--mocha-deep); font-weight:600; }
+
+  .hero-ring {
+    position:absolute; border-radius:50%;
+    border:1px dashed rgba(242,167,179,0.5);
+    animation:spin-slow 30s linear infinite;
+  }
+
+  .hero-ring-1 { width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%); }
+  .hero-ring-2 { width:380px;height:380px;top:50%;left:50%;transform:translate(-50%,-50%);animation-direction:reverse;animation-duration:20s; }
+
+  @keyframes fadeSlideUp {
+    from { opacity:0; transform:translateY(40px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+    color:var(--text-muted); font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase;
+    animation: fadeSlideUp 1s 1s ease both;
+    z-index:2;
+  }
+
+  .scroll-line {
+    width:1px; height:40px; background:linear-gradient(to bottom, var(--rose-deep), transparent);
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap {
+    overflow:hidden; background:var(--mocha-deep);
+    padding:0.9rem 0; border-top:1px solid rgba(255,255,255,0.05);
+  }
+
+  .marquee-inner {
+    display:flex; gap:3rem; width:max-content;
+    animation:marquee 25s linear infinite;
+  }
+
+  @keyframes marquee { to { transform:translateX(-50%); } }
+
+  .marquee-item {
+    display:flex; align-items:center; gap:1rem;
+    white-space:nowrap; color:rgba(255,255,255,0.7);
+    font-size:0.8rem; font-weight:500; letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+
+  .marquee-sep { color:var(--rose); font-size:1.2rem; }
+
+  /* ── SHARED SECTION ── */
+  .section-wrap { padding:7rem 8%; overflow:hidden; }
+
+  .chip {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    background:var(--rose-pale);
+    border:1px solid var(--border);
+    padding:0.3rem 0.9rem; border-radius:30px;
+    font-size:0.72rem; font-weight:600;
+    letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--rose-deep); margin-bottom:1.2rem;
+  }
+
+  .mega-title {
+    font-family:'Playfair Display', serif;
+    font-size:clamp(2.2rem, 4.5vw, 4rem);
+    color:var(--mocha-deep); line-height:1.1;
+    font-weight:700; margin-bottom:1.2rem;
+  }
+
+  .mega-title em { font-style:italic; color:var(--rose-deep); }
+
+  .body-serif {
+    font-family:'Fraunces', serif;
+    font-size:1.1rem; line-height:1.8;
+    color:var(--text-soft);
+  }
+
+  /* ── FEATURE BENTO ── */
+  #menu { background:var(--cream); }
+
+  .bento-header {
+    display:grid; grid-template-columns:1fr 1fr;
+    align-items:center; gap:3rem; margin-bottom:4rem;
+  }
+
+  .bento-grid {
+    display:grid;
+    grid-template-columns:repeat(12, 1fr);
+    grid-auto-rows:minmax(120px, auto);
+    gap:12px;
+  }
+
+  .bento {
+    border-radius:20px; overflow:hidden; position:relative;
+    transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    cursor:pointer;
+  }
+
+  .bento:hover { transform:scale(1.02); box-shadow:0 20px 60px rgba(92,61,46,0.15); }
+
+  .bento-1 { grid-column:span 5; grid-row:span 2; background:var(--mocha-deep); }
+  .bento-2 { grid-column:span 4; grid-row:span 1; background:var(--rose-pale); }
+  .bento-3 { grid-column:span 3; grid-row:span 1; background:var(--sand); }
+  .bento-4 { grid-column:span 4; grid-row:span 1; background:white; border:1px solid var(--border); }
+  .bento-5 { grid-column:span 3; grid-row:span 2; background: linear-gradient(135deg,var(--rose-deep),var(--rose)); }
+  .bento-6 { grid-column:span 4; grid-row:span 1; background:var(--mocha-deep); }
+
+  .bento-img { width:100%; height:100%; object-fit:cover; display:block; }
+
+  .bento-overlay {
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(42,24,16,0.85) 0%, transparent 60%);
+    padding:1.5rem;
+    display:flex; flex-direction:column; justify-content:flex-end;
+  }
+
+  .bento-cat {
+    font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase;
+    font-weight:600; color:var(--rose); margin-bottom:0.3rem;
+  }
+
+  .bento-name {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1rem,2vw,1.4rem);
+    color:white; font-weight:600;
+  }
+
+  .bento-price {
+    position:absolute; top:1rem; right:1rem;
+    background:white; color:var(--mocha-deep);
+    padding:0.3rem 0.7rem; border-radius:30px;
+    font-size:0.8rem; font-weight:700;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .bento-info {
+    padding:1.5rem;
+    display:flex; flex-direction:column; justify-content:center; height:100%;
+  }
+
+  .bento-info-cat { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--rose-deep); font-weight:600; margin-bottom:0.5rem; }
+  .bento-info-name { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--mocha-deep); font-weight:600; margin-bottom:0.4rem; }
+  .bento-info-desc { font-size:0.78rem; color:var(--text-muted); line-height:1.5; }
+  .bento-info-price { font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--gold); font-weight:600; margin-top:auto; padding-top:0.8rem; }
+
+  .bento-white-text { padding:1.5rem; display:flex; flex-direction:column; justify-content:center; }
+  .bento-white-text .bento-info-name { color:white; }
+  .bento-white-text .bento-info-desc { color:rgba(255,255,255,0.65); }
+  .bento-white-text .bento-info-price { color:var(--rose); }
+
+  /* ── STORY SECTION ── */
+  #about {
+    background:var(--warm);
+    position:relative;
+  }
+
+  .story-grid {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:6rem; align-items:center;
+  }
+
+  .story-imgs {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:12px; position:relative;
+  }
+
+  .story-img-wrap {
+    border-radius:20px; overflow:hidden;
+    position:relative;
+  }
+
+  .story-img-wrap:first-child {
+    grid-row:span 2;
+    margin-top:3rem;
+  }
+
+  .story-img { width:100%; height:100%; object-fit:cover; display:block; min-height:180px; }
+
+  .story-badge {
+    position:absolute; bottom:1.5rem; left:1.5rem;
+    background:white; border-radius:14px;
+    padding:1rem 1.4rem;
+    box-shadow:0 10px 40px rgba(92,61,46,0.12);
+  }
+
+  .story-badge-big { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--mocha-deep); line-height:1; }
+  .story-badge-sm { font-size:0.7rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; margin-top:0.2rem; }
+
+  .story-float {
+    position:absolute; top:-20px; right:-15px; z-index:2;
+    background:linear-gradient(135deg,var(--rose-deep),var(--rose));
+    color:white; padding:0.8rem 1.2rem; border-radius:14px;
+    font-size:0.78rem; font-weight:600; text-align:center;
+    box-shadow:0 10px 30px rgba(217,122,138,0.3);
+    animation:float1 4s ease-in-out infinite;
+  }
+
+  .story-float-emoji { font-size:1.5rem; display:block; margin-bottom:0.3rem; }
+
+  .story-values {
+    display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:2.5rem;
+  }
+
+  .story-val {
+    background:var(--cream); border-radius:16px; padding:1.4rem;
+    transition:all 0.3s;
+  }
+
+  .story-val:hover { background:var(--rose-pale); transform:translateY(-3px); box-shadow:0 10px 30px rgba(242,167,179,0.2); }
+
+  .story-val-icon { font-size:1.6rem; margin-bottom:0.6rem; }
+  .story-val-title { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:600; color:var(--mocha-deep); margin-bottom:0.3rem; }
+  .story-val-text { font-size:0.77rem; color:var(--text-muted); line-height:1.5; }
+
+  /* ── CATERING ── */
+  #catering { background:var(--sand); }
+
+  .catering-layout {
+    display:grid; grid-template-columns:1fr 1.4fr;
+    gap:4rem; align-items:center;
+  }
+
+  .catering-text {}
+  .catering-items { display:grid; gap:1rem; }
+
+  .cater-row {
+    background:white; border-radius:16px;
+    padding:1.4rem 1.6rem;
+    display:flex; align-items:center; gap:1.2rem;
+    transition:all 0.3s; border:1px solid transparent;
+  }
+
+  .cater-row:hover { border-color:var(--rose); box-shadow:0 8px 30px rgba(242,167,179,0.15); transform:translateX(6px); }
+
+  .cater-icon {
+    width:52px; height:52px;
+    background:linear-gradient(135deg,var(--rose-pale),var(--rose-blush));
+    border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.5rem; flex-shrink:0;
+  }
+
+  .cater-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:600; color:var(--mocha-deep); margin-bottom:0.2rem; }
+  .cater-desc { font-size:0.78rem; color:var(--text-muted); line-height:1.4; }
+
+  .cater-arrow {
+    margin-left:auto; width:32px; height:32px;
+    background:var(--rose-pale); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.9rem; transition:all 0.3s; flex-shrink:0;
+  }
+
+  .cater-row:hover .cater-arrow { background:var(--rose-deep); color:white; }
+
+  .notice-box {
+    background:linear-gradient(135deg,var(--rose-pale),white);
+    border:1px solid var(--rose);
+    border-radius:14px; padding:1.2rem 1.5rem;
+    display:flex; gap:1rem; align-items:center;
+    margin-top:1.5rem; margin-bottom:2rem;
+    font-size:0.83rem; color:var(--mocha);
+  }
+
+  /* ── GALLERY ── */
+  #gallery { background:var(--cream); }
+
+  .gallery-masonry {
+    columns:3; gap:12px;
+    column-fill:balance;
+  }
+
+  .gallery-tile {
+    break-inside:avoid; margin-bottom:12px;
+    border-radius:18px; overflow:hidden; position:relative;
+    cursor:pointer;
+  }
+
+  .gallery-tile img {
+    width:100%; display:block;
+    transition:transform 0.5s, filter 0.3s;
+    filter:saturate(0.95);
+  }
+
+  .gallery-tile:hover img { transform:scale(1.05); filter:saturate(1.15); }
+
+  .gallery-tile-overlay {
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(42,24,16,0.6) 0%, transparent 60%);
+    opacity:0; transition:opacity 0.3s;
+    display:flex; align-items:flex-end; padding:1.2rem;
+  }
+
+  .gallery-tile:hover .gallery-tile-overlay { opacity:1; }
+
+  .gallery-tile-label {
+    color:white; font-size:0.8rem; font-weight:500;
+  }
+
+  /* ── REVIEWS ── */
+  #reviews {
+    background:var(--mocha-deep);
+    overflow:hidden; position:relative;
+  }
+
+  .reviews-bg-text {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-family:'Playfair Display',serif;
+    font-size:clamp(80px,15vw,180px);
+    font-weight:900; font-style:italic;
+    color:rgba(255,255,255,0.025);
+    white-space:nowrap; pointer-events:none; user-select:none;
+    letter-spacing:-0.02em;
+  }
+
+  .reviews-inner { position:relative; z-index:1; }
+
+  .reviews-track {
+    display:flex; gap:1.5rem; overflow-x:auto; padding:0.5rem 0 1.5rem;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .reviews-track::-webkit-scrollbar { display:none; }
+
+  .review-tile {
+    flex:0 0 340px; scroll-snap-align:start;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:20px; padding:2rem;
+    transition: background 0.3s;
+  }
+
+  .review-tile:hover { background:rgba(255,255,255,0.07); }
+
+  .review-stars { color:var(--rose); font-size:0.9rem; letter-spacing:0.1em; margin-bottom:1rem; }
+
+  .review-quote {
+    font-family:'Fraunces',serif;
+    font-style:italic; font-size:1rem; line-height:1.7;
+    color:rgba(255,255,255,0.8); margin-bottom:1.5rem;
+  }
+
+  .review-person { display:flex; align-items:center; gap:0.8rem; }
+
+  .review-av {
+    width:38px; height:38px; border-radius:50%;
+    background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.78rem; font-weight:700; color:white;
+  }
+
+  .review-av-name { font-size:0.85rem; color:white; font-weight:500; }
+  .review-av-date { font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:0.1rem; }
+
+  .rating-summary {
+    display:flex; align-items:center; gap:2rem;
+    margin-bottom:3rem;
+  }
+
+  .rating-big {
+    font-family:'Playfair Display',serif;
+    font-size:5rem; font-weight:900; color:white; line-height:1;
+  }
+
+  .rating-details { }
+  .rating-stars { color:var(--rose); font-size:1.2rem; margin-bottom:0.3rem; }
+  .rating-count { font-size:0.8rem; color:rgba(255,255,255,0.4); }
+
+  /* ── LOCATION ── */
+  #location { background:var(--warm); }
+
+  .location-split {
+    display:grid; grid-template-columns:1.2fr 1fr;
+    gap:5rem; align-items:start;
+  }
+
+  .hours-visual {
+    background:var(--cream); border-radius:20px;
+    padding:2rem; margin-top:2.5rem;
+  }
+
+  .hours-title { font-family:'Playfair Display',serif; font-size:1rem; color:var(--mocha-deep); font-weight:600; margin-bottom:1.2rem; }
+
+  .hours-list { display:flex; flex-direction:column; gap:0.6rem; }
+
+  .hours-item {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:0.6rem 0; border-bottom:1px solid var(--border);
+    font-size:0.85rem;
+  }
+
+  .hours-day { color:var(--text-soft); font-weight:500; }
+  .hours-time { color:var(--mocha-deep); font-weight:600; }
+  .hours-item.today { background:var(--rose-pale); margin:0 -0.5rem; padding:0.6rem 0.5rem; border-radius:8px; border-bottom-color:transparent; }
+  .hours-badge { font-size:0.65rem; background:var(--rose-deep); color:white; padding:0.2rem 0.5rem; border-radius:10px; font-weight:600; letter-spacing:0.05em; }
+
+  .map-card {
+    background:var(--rose-pale);
+    border-radius:24px; overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:0 20px 60px rgba(242,167,179,0.2);
+  }
+
+  .map-visual {
+    height:260px; background: linear-gradient(135deg,var(--rose-blush),var(--sand));
+    display:flex; align-items:center; justify-content:center;
+    font-size:4rem; position:relative; overflow:hidden;
+  }
+
+  .map-visual::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 50% 50%, transparent 30%, rgba(242,167,179,0.3));
+  }
+
+  .map-info { padding:1.8rem; }
+  .map-info-name { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--mocha-deep); margin-bottom:0.4rem; }
+  .map-info-addr { font-size:0.83rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.5; }
+
+  /* ── LOYALTY ── */
+  .loyalty-section {
+    background:linear-gradient(135deg, var(--rose-pale) 0%, var(--sand) 100%);
+    padding:5rem 8%; position:relative; overflow:hidden;
+  }
+
+  .loyalty-pattern {
+    position:absolute; inset:0; opacity:0.05;
+    background-image:radial-gradient(circle at 2px 2px, var(--rose-deep) 1px, transparent 0);
+    background-size:32px 32px;
+  }
+
+  .loyalty-inner {
+    position:relative; z-index:1;
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:5rem; align-items:center;
+  }
+
+  .stamp-card {
+    background:white; border-radius:24px;
+    padding:2.5rem;
+    box-shadow:0 20px 60px rgba(92,61,46,0.1);
+    border:1px solid var(--border);
+  }
+
+  .stamp-card-title { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--mocha-deep); margin-bottom:0.4rem; }
+  .stamp-card-sub { font-size:0.8rem; color:var(--text-muted); margin-bottom:1.5rem; }
+
+  .stamps-row { display:grid; grid-template-columns:repeat(5,1fr); gap:0.5rem; }
+
+  .stamp-circle {
+    aspect-ratio:1; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem;
+    transition:all 0.3s;
+  }
+
+  .stamp-circle.full { background:linear-gradient(135deg,var(--rose-deep),var(--rose)); box-shadow:0 6px 20px rgba(217,122,138,0.3); }
+  .stamp-circle.empty { background:var(--rose-pale); border:2px dashed var(--rose); opacity:0.6; }
+  .stamp-circle.gift { background:linear-gradient(135deg,var(--gold),var(--gold-light)); box-shadow:0 6px 20px rgba(200,149,108,0.3); }
+
+  /* ── CONTACT ── */
+  #contact { background:var(--cream); }
+
+  .contact-layout {
+    display:grid; grid-template-columns:1.2fr 1fr;
+    gap:5rem; align-items:start;
+  }
+
+  .contact-card {
+    background:white; border-radius:24px;
+    padding:2.5rem; box-shadow:0 20px 60px rgba(92,61,46,0.06);
+    border:1px solid var(--border);
+  }
+
+  .contact-card-title { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--mocha-deep); margin-bottom:0.4rem; }
+  .contact-card-sub { font-size:0.83rem; color:var(--text-muted); margin-bottom:2rem; }
+
+  .cform { display:flex; flex-direction:column; gap:1rem; }
+
+  .cform-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+
+  .cform-group { display:flex; flex-direction:column; gap:0.35rem; }
+
+  .cform-label { font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:600; color:var(--text-muted); }
+
+  .cform-input, .cform-textarea {
+    padding:0.85rem 1rem; background:var(--cream);
+    border:1.5px solid var(--border); border-radius:12px;
+    font-family:'Outfit',sans-serif; font-size:0.88rem;
+    color:var(--text); outline:none; transition:border-color 0.25s, box-shadow 0.25s;
+    resize:none;
+  }
+
+  .cform-input:focus, .cform-textarea:focus {
+    border-color:var(--rose-deep);
+    box-shadow:0 0 0 4px rgba(217,122,138,0.1);
+  }
+
+  .cform-textarea { height:130px; }
+
+  .contact-details { display:flex; flex-direction:column; gap:1rem; }
+
+  .contact-detail-card {
+    background:white; border-radius:16px;
+    padding:1.3rem 1.5rem;
+    display:flex; align-items:center; gap:1.2rem;
+    border:1px solid var(--border);
+    transition:all 0.3s;
+  }
+
+  .contact-detail-card:hover { border-color:var(--rose); box-shadow:0 6px 24px rgba(242,167,179,0.15); }
+
+  .cd-icon {
+    width:48px; height:48px; border-radius:14px;
+    background:linear-gradient(135deg,var(--rose-pale),var(--rose-blush));
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+  }
+
+  .cd-label { font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:600; color:var(--text-muted); }
+  .cd-value { font-size:0.88rem; color:var(--mocha-deep); margin-top:0.15rem; font-weight:500; }
+
+  .socials { display:flex; gap:0.7rem; margin-top:0.5rem; }
+
+  .social-pill {
+    display:flex; align-items:center; gap:0.4rem;
+    background:white; border:1px solid var(--border);
+    padding:0.4rem 0.9rem; border-radius:30px;
+    font-size:0.78rem; font-weight:500; color:var(--mocha);
+    text-decoration:none; transition:all 0.25s;
+  }
+
+  .social-pill:hover { background:var(--rose-pale); border-color:var(--rose); }
+
+  /* ── FOOTER ── */
+  footer {
+    background:var(--mocha-deep);
+    padding:4.5rem 8% 2.5rem;
+    color:rgba(255,255,255,0.6);
+  }
+
+  .footer-grid {
+    display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr;
+    gap:3.5rem; margin-bottom:3.5rem;
+    padding-bottom:3rem;
+    border-bottom:1px solid rgba(255,255,255,0.07);
+  }
+
+  .footer-brand {}
+  .footer-brand-logo { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:white; margin-bottom:0.8rem; }
+  .footer-brand-logo span { color:var(--rose); font-style:italic; }
+  .footer-tagline { font-size:0.83rem; line-height:1.7; margin-bottom:1.5rem; }
+
+  .footer-h { font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; font-weight:600; color:rgba(255,255,255,0.3); margin-bottom:1.2rem; }
+
+  .footer-ul { list-style:none; display:flex; flex-direction:column; gap:0.65rem; }
+  .footer-ul li a { color:rgba(255,255,255,0.6); text-decoration:none; font-size:0.85rem; transition:color 0.2s; }
+  .footer-ul li a:hover { color:var(--rose); }
+
+  .footer-bottom { display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; flex-wrap:wrap; gap:1rem; }
+
+  /* ── CHATBOT ── */
+  .chat-fab {
+    position:fixed; bottom:2rem; right:2rem; z-index:999;
+    width:62px; height:62px; border-radius:50%;
+    background:linear-gradient(135deg,var(--rose-deep),var(--rose));
+    border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.5rem;
+    box-shadow:0 8px 32px rgba(217,122,138,0.4);
+    transition:all 0.3s;
+    animation:float1 4s ease-in-out infinite;
+  }
+
+  .chat-fab:hover { transform:scale(1.1) !important; box-shadow:0 14px 40px rgba(217,122,138,0.5); }
+
+  .chat-badge {
+    position:absolute; top:-2px; right:-2px;
+    width:18px; height:18px; background:var(--mocha-deep);
+    border-radius:50%; color:white; font-size:0.65rem; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    border:2px solid white;
+  }
+
+  .chat-box {
+    position:fixed; bottom:5.8rem; right:2rem; z-index:998;
+    width:370px;
+    background:white; border-radius:24px;
+    box-shadow:0 30px 80px rgba(92,61,46,0.15);
+    overflow:hidden;
+    transform:scale(0.85) translateY(20px);
+    opacity:0; pointer-events:none;
+    transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    border:1px solid var(--border);
+  }
+
+  .chat-box.open { transform:scale(1) translateY(0); opacity:1; pointer-events:all; }
+
+  .chat-box-header {
+    padding:1.3rem 1.5rem;
+    background:linear-gradient(135deg,var(--rose-deep),var(--rose));
+    display:flex; align-items:center; gap:0.9rem;
+  }
+
+  .chat-av {
+    width:40px; height:40px; border-radius:50%;
+    background:rgba(255,255,255,0.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem;
+  }
+
+  .chat-box-name { color:white; font-weight:600; font-size:0.92rem; }
+  .chat-box-status { color:rgba(255,255,255,0.75); font-size:0.72rem; margin-top:0.1rem; }
+
+  .chat-close-btn {
+    margin-left:auto; background:rgba(255,255,255,0.2);
+    border:none; width:28px; height:28px; border-radius:50%;
+    color:white; cursor:pointer; font-size:0.8rem;
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s;
+  }
+
+  .chat-close-btn:hover { background:rgba(255,255,255,0.35); }
+
+  .chat-msgs {
+    padding:1.2rem; max-height:300px; overflow-y:auto;
+    display:flex; flex-direction:column; gap:0.8rem;
+    background:var(--petal);
+  }
+
+  .chat-msgs::-webkit-scrollbar { width:4px; }
+  .chat-msgs::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+
+  .cmsg {
+    max-width:82%; padding:0.75rem 1rem;
+    font-size:0.84rem; line-height:1.5; border-radius:18px;
+  }
+
+  .cmsg-bot { background:white; color:var(--mocha); align-self:flex-start; border-radius:4px 18px 18px 18px; box-shadow:0 2px 10px rgba(92,61,46,0.08); }
+  .cmsg-user { background:linear-gradient(135deg,var(--rose-deep),var(--rose)); color:white; align-self:flex-end; border-radius:18px 18px 4px 18px; }
+
+  .chat-chips {
+    padding:0.7rem 1rem;
+    display:flex; gap:0.4rem; flex-wrap:wrap;
+    background:white; border-top:1px solid var(--border);
+  }
+
+  .chip-btn {
+    font-size:0.72rem; padding:0.35rem 0.8rem;
+    background:var(--rose-pale); color:var(--mocha-deep);
+    border:1px solid var(--border); border-radius:30px;
+    cursor:pointer; font-family:'Outfit',sans-serif; font-weight:500;
+    transition:all 0.2s;
+  }
+
+  .chip-btn:hover { background:var(--rose); color:white; border-color:var(--rose); }
+
+  .chat-input-wrap {
+    padding:0.8rem 1rem;
+    display:flex; gap:0.5rem; background:white;
+    border-top:1px solid var(--border);
+  }
+
+  .chat-txt {
+    flex:1; padding:0.65rem 1rem;
+    border:1.5px solid var(--border); border-radius:30px;
+    font-family:'Outfit',sans-serif; font-size:0.83rem;
+    color:var(--text); outline:none;
+    transition:border-color 0.2s;
+  }
+
+  .chat-txt:focus { border-color:var(--rose-deep); }
+
+  .chat-send-btn {
+    width:38px; height:38px; border-radius:50%;
+    background:linear-gradient(135deg,var(--rose-deep),var(--rose));
+    border:none; color:white; cursor:pointer; font-size:1rem;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform 0.2s;
+  }
+
+  .chat-send-btn:hover { transform:scale(1.1); }
+
+  /* RESERVATION */
+  #reservation {
+    background:linear-gradient(135deg, var(--mocha-deep) 0%, var(--mocha) 100%);
+    padding:6rem 8%;
+    text-align:center; position:relative; overflow:hidden;
+  }
+
+  #reservation::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at center, rgba(242,167,179,0.15) 0%, transparent 70%);
+  }
+
+  .res-inner { position:relative; z-index:1; max-width:640px; margin:0 auto; }
+
+  .res-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.2rem); color:white; font-weight:700; margin-bottom:1rem; }
+  .res-title em { color:var(--rose); font-style:italic; }
+  .res-sub { color:rgba(255,255,255,0.65); font-size:0.95rem; line-height:1.7; margin-bottom:2rem; }
+
+  /* DIALOG */
+  dialog {
+    border:none; padding:0; background:white;
+    border-radius:24px; max-width:500px; width:90%;
+    box-shadow:0 40px 100px rgba(42,24,16,0.25);
+  }
+
+  dialog::backdrop { background:rgba(42,24,16,0.7); backdrop-filter:blur(4px); }
+
+  .dlog-head {
+    padding:1.6rem 2rem;
+    background:linear-gradient(135deg,var(--rose-deep),var(--rose));
+    border-radius:24px 24px 0 0;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+
+  .dlog-title { font-family:'Playfair Display',serif; font-size:1.3rem; color:white; font-weight:700; }
+
+  .dlog-close {
+    background:rgba(255,255,255,0.2); border:none; cursor:pointer;
+    width:32px; height:32px; border-radius:50%;
+    color:white; font-size:1rem;
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s;
+  }
+
+  .dlog-close:hover { background:rgba(255,255,255,0.35); }
+
+  .dlog-body { padding:2rem; }
+  .dlog-form { display:flex; flex-direction:column; gap:1rem; }
+  .dlog-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+
+  /* ── ANIMATIONS ── */
+  .reveal { opacity:0; transform:translateY(40px); transition:all 0.7s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.up { opacity:1; transform:translateY(0); }
+  .reveal-left { opacity:0; transform:translateX(-40px); transition:all 0.7s cubic-bezier(0.22,1,0.36,1); }
+  .reveal-left.up { opacity:1; transform:translateX(0); }
+  .reveal-right { opacity:0; transform:translateX(40px); transition:all 0.7s cubic-bezier(0.22,1,0.36,1); }
+  .reveal-right.up { opacity:1; transform:translateX(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:1024px) {
+    .hero-content { grid-template-columns:1fr; gap:2rem; }
+    .hero-visual { height:350px; }
+    .hero-main-img { width:200px; height:280px; }
+    .hero-ring-1 { width:360px; height:360px; }
+    .bento-header { grid-template-columns:1fr; }
+    .bento-grid { grid-template-columns:repeat(6,1fr); }
+    .bento-1 { grid-column:span 3; }
+    .bento-2, .bento-3, .bento-4 { grid-column:span 3; }
+    .bento-5 { grid-column:span 3; }
+    .bento-6 { grid-column:span 3; }
+    .story-grid { grid-template-columns:1fr; gap:3rem; }
+    .catering-layout { grid-template-columns:1fr; }
+    .gallery-masonry { columns:2; }
+    .loyalty-inner { grid-template-columns:1fr; }
+    .contact-layout { grid-template-columns:1fr; }
+    .location-split { grid-template-columns:1fr; }
+    .footer-grid { grid-template-columns:1fr 1fr; gap:2.5rem; }
+  }
+
+  @media (max-width:768px) {
+    .nav-pill { display:none; }
+    .nav-pill.open {
+      display:flex; flex-direction:column;
+      position:absolute; top:72px; left:0; right:0;
+      background:var(--cream); padding:1.5rem;
+      box-shadow:0 10px 40px rgba(92,61,46,0.1);
+      border-radius:0 0 16px 16px; z-index:999;
+      gap:0.5rem;
+    }
+    .nav-pill.open a { border-radius:12px; padding:0.8rem 1rem; }
+    .hamburger-new { display:flex; }
+    .section-wrap { padding:4rem 5%; }
+    .bento-grid { grid-template-columns:1fr 1fr; }
+    .bento-1,.bento-2,.bento-3,.bento-4,.bento-5,.bento-6 { grid-column:span 1; grid-row:span 1; }
+    .gallery-masonry { columns:1; }
+    .chat-box { right:1rem; left:1rem; width:auto; }
+    .footer-grid { grid-template-columns:1fr; }
+    .dlog-row { grid-template-columns:1fr; }
+    .hero-float { display:none; }
+    body { cursor:auto; }
+    .cursor, .cursor-trail { display:none; }
+    .cform-row { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">Butter <span class="amp">&</span> Cup</div>
+  <div class="nav-pill" id="navPill">
+    <a href="#home" class="active">Home</a>
+    <a href="#menu">Menu</a>
+    <a href="#catering">Catering</a>
+    <a href="#about">About</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#location">Visit</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-icon-btn" onclick="document.getElementById('resDialog').showModal()" aria-label="Reserve">📅</button>
+    <button class="nav-icon-btn" id="chatFabNav" aria-label="Chat">💬</button>
+    <button class="hamburger-new" id="hamburger" aria-label="Menu">
+      <span style="width:24px"></span><span style="width:18px"></span><span style="width:24px"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-tag">
+        <span class="hero-tag-dot"></span>
+        Handcrafted · Homemade · Daily
+      </div>
+      <h1 class="hero-h1">
+        <span class="line-normal">Fresh Coffee,</span>
+        <span class="line-italic">Sweet Moments,</span>
+        <span class="line-normal">Made with Love.</span>
+      </h1>
+      <p class="hero-p">Enjoy handcrafted coffee, freshly baked scones, and delicious homemade meals in a cozy, welcoming atmosphere where every visit feels like coming home.</p>
+      <div class="hero-btns">
+        <a href="#menu" class="btn-rose">Explore the Menu <span>→</span></a>
+        <a href="#reservation" class="btn-ghost">Reserve a Table</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-ring hero-ring-1"></div>
+      <div class="hero-ring hero-ring-2"></div>
+      <div class="hero-circle-bg"></div>
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80" alt="Coffee" class="hero-main-img">
+
+      <div class="hero-float hero-float-1">
+        <div class="float-emoji">🍞</div>
+        <div class="float-label">Baked Today</div>
+        <div class="float-value">Fresh Scones</div>
+      </div>
+
+      <div class="hero-float hero-float-2">
+        <div class="float-emoji">⭐</div>
+        <div class="float-label">Google Reviews</div>
+        <div class="float-value">4.9 · 200+ Reviews</div>
+      </div>
+
+      <div class="hero-float hero-float-3">
+        <div class="float-emoji">☕</div>
+        <div class="float-label">Today's Special</div>
+        <div class="float-value">Matcha Latte</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <div class="marquee-item">Homemade Scones <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Carrot Cake <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Matcha Latte <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Soup & Scone Combo <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Cranberry Turkey Bacon <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Fresh Daily <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Specialty Cakes <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Catering Available <span class="marquee-sep">✦</span></div>
+    <!-- duplicate for infinite -->
+    <div class="marquee-item">Homemade Scones <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Carrot Cake <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Matcha Latte <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Soup & Scone Combo <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Cranberry Turkey Bacon <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Fresh Daily <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Specialty Cakes <span class="marquee-sep">✦</span></div>
+    <div class="marquee-item">Catering Available <span class="marquee-sep">✦</span></div>
+  </div>
+</div>
+
+<!-- MENU BENTO -->
+<section id="menu" class="section-wrap">
+  <div class="bento-header">
+    <div class="reveal">
+      <div class="chip">✦ Our Menu</div>
+      <h2 class="mega-title">Everything Made<br><em>In-House,</em> Daily</h2>
+    </div>
+    <p class="body-serif reveal" style="max-width:380px;text-align:right;">From the first espresso to the last slice of carrot cake — every item is crafted with care using quality local ingredients.</p>
+  </div>
+
+  <div class="bento-grid reveal">
+    <div class="bento bento-1">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=700&q=80" alt="Coffee" class="bento-img">
+      <div class="bento-overlay">
+        <div>
+          <p class="bento-cat">Signature Drink</p>
+          <h3 class="bento-name">House Coffee</h3>
+        </div>
+      </div>
+      <div class="bento-price">$3.50</div>
+    </div>
+    <div class="bento bento-2">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80" alt="Scones" class="bento-img">
+      <div class="bento-overlay">
+        <div>
+          <p class="bento-cat">Baked Fresh Daily</p>
+          <h3 class="bento-name">Scones</h3>
+        </div>
+      </div>
+      <div class="bento-price">$3.95</div>
+    </div>
+    <div class="bento bento-3">
+      <div class="bento-info">
+        <p class="bento-info-cat">Specialty</p>
+        <h3 class="bento-info-name">Matcha Latte</h3>
+        <p class="bento-info-desc">Ceremonial matcha with steamed oat milk.</p>
+        <div class="bento-info-price">$5.50</div>
+      </div>
+    </div>
+    <div class="bento bento-4">
+      <div class="bento-info">
+        <p class="bento-info-cat">House Classic</p>
+        <h3 class="bento-info-name">Carrot Cake</h3>
+        <p class="bento-info-desc">Moist, spiced, cream cheese frosting.</p>
+        <div class="bento-info-price">$6.50</div>
+      </div>
+    </div>
+    <div class="bento bento-5">
+      <div class="bento-info bento-white-text">
+        <p class="bento-info-cat" style="color:rgba(255,255,255,0.7)">Daily Special</p>
+        <h3 class="bento-info-name">Soup & Scone Combo</h3>
+        <p class="bento-info-desc">Our most-loved pairing.</p>
+        <div class="bento-info-price">$11.50</div>
+      </div>
+    </div>
+    <div class="bento bento-6">
+      <div class="bento-info bento-white-text">
+        <p class="bento-info-cat" style="color:rgba(255,255,255,0.7)">Sandwich</p>
+        <h3 class="bento-info-name">Cranberry Turkey Bacon</h3>
+        <p class="bento-info-desc">House bread, cranberry aioli, crispy bacon.</p>
+        <div class="bento-info-price">$13.95</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:3rem;" class="reveal">
+    <a href="#" class="btn-rose">View Full Menu →</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-wrap">
+  <div class="story-grid">
+    <div class="story-imgs reveal-left">
+      <div class="story-img-wrap">
+        <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&q=80" alt="Café" class="story-img">
+        <div class="story-badge">
+          <div class="story-badge-big">10+</div>
+          <div class="story-badge-sm">Years of Joy</div>
+        </div>
+      </div>
+      <div class="story-img-wrap">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80" alt="Coffee" class="story-img">
+      </div>
+      <div class="story-img-wrap">
+        <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400&q=80" alt="Cake" class="story-img">
+      </div>
+      <div class="story-float">
+        <span class="story-float-emoji">🌿</span>
+        Local<br>Ingredients
+      </div>
+    </div>
+    <div class="reveal-right">
+      <div class="chip">✦ Our Story</div>
+      <h2 class="mega-title">Where Every<br>Meal Feels<br><em>Like Home</em></h2>
+      <p class="body-serif" style="margin-top:1.2rem;">Butter & Cup Café is a cozy destination where friends and families gather to enjoy homemade meals, desserts, and fresh coffee in a welcoming, warm environment.</p>
+      <p style="font-size:0.87rem;color:var(--text-muted);line-height:1.8;margin-top:1rem;">Every recipe crafted with love using locally sourced ingredients. We believe great food starts with great ingredients — and even better company.</p>
+      <div class="story-values">
+        <div class="story-val">
+          <div class="story-val-icon">🌿</div>
+          <div class="story-val-title">Local Ingredients</div>
+          <div class="story-val-text">Sourced from trusted local farms.</div>
+        </div>
+        <div class="story-val">
+          <div class="story-val-icon">🍞</div>
+          <div class="story-val-title">Baked Fresh Daily</div>
+          <div class="story-val-text">Made in-house every morning.</div>
+        </div>
+        <div class="story-val">
+          <div class="story-val-icon">☕</div>
+          <div class="story-val-title">Handcrafted Coffee</div>
+          <div class="story-val-text">Each cup brewed to order.</div>
+        </div>
+        <div class="story-val">
+          <div class="story-val-icon">🤝</div>
+          <div class="story-val-title">Community First</div>
+          <div class="story-val-text">Where everyone belongs.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATERING -->
+<section id="catering" class="section-wrap">
+  <div class="catering-layout">
+    <div class="reveal-left">
+      <div class="chip">✦ Catering</div>
+      <h2 class="mega-title">Elevate Your<br><em>Next Event</em></h2>
+      <p class="body-serif" style="margin-top:1.2rem;margin-bottom:2rem;">Beautiful platters and custom orders crafted for any occasion — from intimate gatherings to large corporate events.</p>
+      <div class="notice-box">
+        <span style="font-size:1.4rem;">⏰</span>
+        <span><strong>48-hour notice</strong> required for large platter orders.</span>
+      </div>
+      <a href="#contact" class="btn-rose">Order Catering →</a>
+    </div>
+    <div class="catering-items reveal-right">
+      <div class="cater-row">
+        <div class="cater-icon">🥪</div>
+        <div>
+          <div class="cater-name">Sandwich Trays</div>
+          <div class="cater-desc">Assorted house sandwiches beautifully presented for your guests.</div>
+        </div>
+        <div class="cater-arrow">→</div>
+      </div>
+      <div class="cater-row">
+        <div class="cater-icon">🌯</div>
+        <div>
+          <div class="cater-name">Wrap Trays</div>
+          <div class="cater-desc">Fresh wraps with a variety of seasonal fillings.</div>
+        </div>
+        <div class="cater-arrow">→</div>
+      </div>
+      <div class="cater-row">
+        <div class="cater-icon">🍰</div>
+        <div>
+          <div class="cater-name">Scone Platters</div>
+          <div class="cater-desc">Freshly baked scones with jams, clotted cream, and butter.</div>
+        </div>
+        <div class="cater-arrow">→</div>
+      </div>
+      <div class="cater-row">
+        <div class="cater-icon">🎂</div>
+        <div>
+          <div class="cater-name">Custom Cakes</div>
+          <div class="cater-desc">Bespoke celebration cakes made to your vision.</div>
+        </div>
+        <div class="cater-arrow">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="section-wrap">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;" class="reveal">
+    <div>
+      <div class="chip">✦ Gallery</div>
+      <h2 class="mega-title">Life at<br><em>Butter & Cup</em></h2>
+    </div>
+    <a href="#" style="font-size:0.82rem;font-weight:600;letter-spacing:0.06em;color:var(--mocha-deep);text-decoration:none;">@butterandcup ↗</a>
+  </div>
+  <div class="gallery-masonry reveal">
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&q=80" alt="Coffee" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">☕ Latte Art</span></div></div>
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80" alt="Scones" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">🍞 Fresh Scones</span></div></div>
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=500&q=80" alt="Cake" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">🎂 Carrot Cake</span></div></div>
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=500&q=80" alt="Café" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">🏡 Our Space</span></div></div>
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=500&q=80" alt="Matcha" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">🍵 Matcha Latte</span></div></div>
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&q=80" alt="Sandwich" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">🥪 Sandwiches</span></div></div>
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=500&q=80" alt="Carrot Cake" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">🍰 Desserts</span></div></div>
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80" alt="Latte" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">☕ Coffee Art</span></div></div>
+    <div class="gallery-tile"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&q=80" alt="Café" loading="lazy"><div class="gallery-tile-overlay"><span class="gallery-tile-label">📸 Daily Life</span></div></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews" class="section-wrap">
+  <div class="reviews-bg-text">Love</div>
+  <div class="reviews-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:2rem;" class="reveal">
+      <div>
+        <div class="chip" style="background:rgba(242,167,179,0.15);color:var(--rose);">✦ Reviews</div>
+        <h2 class="mega-title" style="color:white;">What Our<br><em>Guests Say</em></h2>
+      </div>
+      <div class="rating-summary">
+        <div class="rating-big">4.9</div>
+        <div class="rating-details">
+          <div class="rating-stars">★★★★★</div>
+          <div class="rating-count">200+ Google Reviews</div>
+        </div>
+      </div>
+    </div>
+    <div class="reviews-track reveal">
+      <div class="review-tile">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"The scones are absolutely divine — we make a special trip just for them every weekend. Warm, welcoming, truly a hidden gem."</p>
+        <div class="review-person">
+          <div class="review-av">SM</div>
+          <div><div class="review-av-name">Sarah M.</div><div class="review-av-date">2 weeks ago</div></div>
+        </div>
+      </div>
+      <div class="review-tile">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"Best carrot cake I've ever had. The soup and scone combo is perfect for a cozy lunch. Staff are lovely and remember your name."</p>
+        <div class="review-person">
+          <div class="review-av">JL</div>
+          <div><div class="review-av-name">James L.</div><div class="review-av-date">1 month ago</div></div>
+        </div>
+      </div>
+      <div class="review-tile">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"Ordered catering for our office and everyone raved about the sandwich trays. Easy to order, beautifully presented."</p>
+        <div class="review-person">
+          <div class="review-av">RP</div>
+          <div><div class="review-av-name">Rachel P.</div><div class="review-av-date">3 weeks ago</div></div>
+        </div>
+      </div>
+      <div class="review-tile">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-quote">"The matcha latte is the best in town. Such a cozy atmosphere, my go-to spot for working from my laptop."</p>
+        <div class="review-person">
+          <div class="review-av">KW</div>
+          <div><div class="review-av-name">Kate W.</div><div class="review-av-date">1 week ago</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOYALTY -->
+<div class="loyalty-section">
+  <div class="loyalty-pattern"></div>
+  <div class="loyalty-inner">
+    <div class="reveal-left">
+      <div class="chip">✦ Loyalty Program</div>
+      <h2 class="mega-title">Your 10th Coffee<br><em>Is On Us</em> ☕</h2>
+      <p class="body-serif" style="margin-top:1.2rem;margin-bottom:2rem;">Collect 9 stamps, and your 10th drink is completely free. Join our growing community of coffee lovers.</p>
+      <a href="#" class="btn-rose">Join Free — It's Easy →</a>
+    </div>
+    <div class="stamp-card reveal-right">
+      <div class="stamp-card-title">Your Coffee Card</div>
+      <div class="stamp-card-sub">5 of 9 stamps collected · 4 more to go!</div>
+      <div class="stamps-row">
+        <div class="stamp-circle full">☕</div>
+        <div class="stamp-circle full">☕</div>
+        <div class="stamp-circle full">☕</div>
+        <div class="stamp-circle full">☕</div>
+        <div class="stamp-circle full">☕</div>
+        <div class="stamp-circle empty">☕</div>
+        <div class="stamp-circle empty">☕</div>
+        <div class="stamp-circle empty">☕</div>
+        <div class="stamp-circle empty">☕</div>
+        <div class="stamp-circle gift">🎁</div>
+      </div>
+      <div style="margin-top:1.2rem;height:6px;background:var(--rose-pale);border-radius:10px;overflow:hidden;">
+        <div style="width:50%;height:100%;background:linear-gradient(90deg,var(--rose-deep),var(--rose));border-radius:10px;transition:width 0.8s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:0.4rem;font-size:0.72rem;color:var(--text-muted);">
+        <span>0</span><span style="font-weight:600;color:var(--rose-deep);">5 stamps</span><span>FREE ☕</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOCATION -->
+<section id="location" class="section-wrap">
+  <div style="text-align:center;margin-bottom:4rem;" class="reveal">
+    <div class="chip" style="justify-content:center;display:inline-flex;">✦ Visit Us</div>
+    <h2 class="mega-title">Find Your Way<br>to <em>Sweet Moments</em></h2>
+  </div>
+  <div class="location-split">
+    <div class="reveal-left">
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+        <div class="contact-detail-card">
+          <div class="cd-icon">📍</div>
+          <div><div class="cd-label">Address</div><div class="cd-value">123 Maple Street, Your City<br>Province A1B 2C3</div></div>
+        </div>
+        <div class="contact-detail-card">
+          <div class="cd-icon">📞</div>
+          <div><div class="cd-label">Phone</div><div class="cd-value">(555) 123-4567</div></div>
+        </div>
+        <div class="contact-detail-card">
+          <div class="cd-icon">🚗</div>
+          <div><div class="cd-label">Parking</div><div class="cd-value">Free lot adjacent. Street parking available.</div></div>
+        </div>
+      </div>
+      <div class="hours-visual">
+        <div class="hours-title">Opening Hours</div>
+        <div class="hours-list">
+          <div class="hours-item today">
+            <span class="hours-day">Monday–Friday</span>
+            <span style="display:flex;gap:0.6rem;align-items:center;"><span class="hours-time">7:00 AM – 6:00 PM</span><span class="hours-badge">Today</span></span>
+          </div>
+          <div class="hours-item"><span class="hours-day">Saturday</span><span class="hours-time">8:00 AM – 5:00 PM</span></div>
+          <div class="hours-item"><span class="hours-day">Sunday</span><span class="hours-time">9:00 AM – 4:00 PM</span></div>
+        </div>
+      </div>
+      <a href="https://maps.google.com" target="_blank" class="btn-rose" style="display:inline-flex;margin-top:1.5rem;">Get Directions ↗</a>
+    </div>
+    <div class="map-card reveal-right">
+      <div class="map-visual">📍</div>
+      <div class="map-info">
+        <div class="map-info-name">Butter & Cup Café</div>
+        <div class="map-info-addr">123 Maple Street, Your City<br>Open Today: 7:00 AM – 6:00 PM</div>
+        <a href="https://maps.google.com" target="_blank" class="btn-rose" style="display:inline-flex;font-size:0.8rem;padding:0.7rem 1.5rem;">Open in Google Maps →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVATION CTA -->
+<section id="reservation">
+  <div class="res-inner reveal">
+    <h2 class="res-title">Reserve Your<br><em>Perfect Table</em></h2>
+    <p class="res-sub">Secure your spot at Butter & Cup. Walk-ins always welcome, but reservations ensure your table is ready and waiting.</p>
+    <button class="btn-rose" onclick="document.getElementById('resDialog').showModal()" style="font-size:1rem;padding:1rem 2.5rem;">Make a Reservation 📅</button>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section-wrap">
+  <div class="contact-layout">
+    <div class="contact-card reveal-left">
+      <div class="contact-card-title">Send Us a Message</div>
+      <div class="contact-card-sub">We'd love to hear from you — catering, feedback, or just saying hi!</div>
+      <form class="cform" onsubmit="handleContact(event)">
+        <div class="cform-row">
+          <div class="cform-group">
+            <label class="cform-label">First Name</label>
+            <input type="text" class="cform-input" placeholder="Jane" required>
+          </div>
+          <div class="cform-group">
+            <label class="cform-label">Last Name</label>
+            <input type="text" class="cform-input" placeholder="Doe" required>
+          </div>
+        </div>
+        <div class="cform-group">
+          <label class="cform-label">Email</label>
+          <input type="email" class="cform-input" placeholder="jane@email.com" required>
+        </div>
+        <div class="cform-group">
+          <label class="cform-label">How Can We Help?</label>
+          <textarea class="cform-textarea" placeholder="Tell us about your inquiry..."></textarea>
+        </div>
+        <button type="submit" class="btn-rose" style="width:100%;justify-content:center;">Send Message ✉️</button>
+      </form>
+    </div>
+    <div class="reveal-right">
+      <div class="chip">✦ Get in Touch</div>
+      <h2 class="mega-title" style="font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:1.5rem;">We'd Love<br>to <em>Hear from You</em></h2>
+      <div class="contact-details">
+        <div class="contact-detail-card">
+          <div class="cd-icon">📞</div>
+          <div><div class="cd-label">Phone</div><div class="cd-value">(555) 123-4567</div></div>
+        </div>
+        <div class="contact-detail-card">
+          <div class="cd-icon">✉️</div>
+          <div><div class="cd-label">Email</div><div class="cd-value">hello@butterandcup.com</div></div>
+        </div>
+        <div class="contact-detail-card">
+          <div class="cd-icon">📍</div>
+          <div><div class="cd-label">Address</div><div class="cd-value">123 Maple Street, Your City</div></div>
+        </div>
+      </div>
+      <div class="socials" style="margin-top:1.5rem;">
+        <a href="#" class="social-pill">📸 Instagram</a>
+        <a href="#" class="social-pill">👍 Facebook</a>
+        <a href="#" class="social-pill">🎵 TikTok</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-brand-logo">Butter <span>&</span> Cup</div>
+      <p class="footer-tagline">A cozy café where homemade food, fresh coffee, and sweet moments come together every single day.</p>
+      <div class="socials">
+        <a href="#" class="social-pill" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);">📸</a>
+        <a href="#" class="social-pill" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);">👍</a>
+        <a href="#" class="social-pill" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);">🎵</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-h">Explore</div>
+      <ul class="footer-ul">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#catering">Catering</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-h">Services</div>
+      <ul class="footer-ul">
+        <li><a href="#reservation">Reservations</a></li>
+        <li><a href="#catering">Order Catering</a></li>
+        <li><a href="#">Pickup & Delivery</a></li>
+        <li><a href="#">Loyalty Card</a></li>
+        <li><a href="#">Gift Cards</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-h">Hours</div>
+      <ul class="footer-ul">
+        <li><a href="#">Mon–Fri: 7am – 6pm</a></li>
+        <li><a href="#">Saturday: 8am – 5pm</a></li>
+        <li><a href="#">Sunday: 9am – 4pm</a></li>
+        <li><a href="#location">Get Directions</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Butter & Cup Café. All rights reserved.</span>
+    <span style="color:var(--rose);">Made with ☕ & love</span>
+    <span>Privacy · Terms</span>
+  </div>
+</footer>
+
+<!-- RESERVATION DIALOG -->
+<dialog id="resDialog">
+  <div class="dlog-head">
+    <span class="dlog-title">✦ Reserve a Table</span>
+    <button class="dlog-close" onclick="document.getElementById('resDialog').close()">✕</button>
+  </div>
+  <div class="dlog-body">
+    <form class="dlog-form" onsubmit="handleRes(event)">
+      <div class="dlog-row">
+        <div class="cform-group">
+          <label class="cform-label">First Name</label>
+          <input type="text" class="cform-input" placeholder="Jane" required>
+        </div>
+        <div class="cform-group">
+          <label class="cform-label">Last Name</label>
+          <input type="text" class="cform-input" placeholder="Doe" required>
+        </div>
+      </div>
+      <div class="cform-group">
+        <label class="cform-label">Email</label>
+        <input type="email" class="cform-input" placeholder="jane@email.com" required>
+      </div>
+      <div class="dlog-row">
+        <div class="cform-group">
+          <label class="cform-label">Date</label>
+          <input type="date" class="cform-input" required>
+        </div>
+        <div class="cform-group">
+          <label class="cform-label">Time</label>
+          <select class="cform-input" required>
+            <option value="">Select</option>
+            <option>8:00 AM</option><option>9:00 AM</option><option>10:00 AM</option>
+            <option>11:00 AM</option><option>12:00 PM</option><option>1:00 PM</option>
+            <option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option>
+          </select>
+        </div>
+      </div>
+      <div class="cform-group">
+        <label class="cform-label">Party Size</label>
+        <select class="cform-input" required>
+          <option>1 person</option><option>2 people</option><option>3 people</option>
+          <option>4 people</option><option>5 people</option><option>6+ people</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-rose" style="width:100%;justify-content:center;margin-top:0.5rem;">Confirm Reservation 🎉</button>
+    </form>
+  </div>
+</dialog>
+
+<!-- CHATBOT -->
+<button class="chat-fab" id="chatFab" aria-label="Chat">
+  💬
+  <div class="chat-badge">1</div>
+</button>
+
+<div class="chat-box" id="chatBox">
+  <div class="chat-box-header">
+    <div class="chat-av">🧁</div>
+    <div>
+      <div class="chat-box-name">Butter & Cup Assistant</div>
+      <div class="chat-box-status">● Online · Usually instant</div>
+    </div>
+    <button class="chat-close-btn" id="chatCloseBtn">✕</button>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="cmsg cmsg-bot">Hi there! ☕ Welcome to Butter & Cup. How can I help you today?</div>
+  </div>
+  <div class="chat-chips" id="chatChips">
+    <button class="chip-btn" onclick="qSend('What are your hours?')">🕐 Hours</button>
+    <button class="chip-btn" onclick="qSend('What\'s on the menu?')">📋 Menu</button>
+    <button class="chip-btn" onclick="qSend('Do you cater?')">🎉 Catering</button>
+    <button class="chip-btn" onclick="qSend('How do I get there?')">📍 Location</button>
+  </div>
+  <div class="chat-input-wrap">
+    <input type="text" class="chat-txt" id="chatTxt" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')cSend()">
+    <button class="chat-send-btn" onclick="cSend()">→</button>
+  </div>
+</div>
+
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursorTrail');
+if (cursor && window.innerWidth > 768) {
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      trail.style.left = e.clientX + 'px';
+      trail.style.top = e.clientY + 'px';
+    }, 80);
+  });
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.style.transform = 'translate(-50%,-50%) scale(1.8)');
+    el.addEventListener('mouseleave', () => cursor.style.transform = 'translate(-50%,-50%) scale(1)');
+  });
+}
+
+// NAV
+const hamburger = document.getElementById('hamburger');
+const navPill = document.getElementById('navPill');
+hamburger.addEventListener('click', () => navPill.classList.toggle('open'));
+
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('up'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+// FORMS
+function handleContact(e) {
+  e.preventDefault();
+  alert('Thank you! We\'ll be in touch soon. ☕');
+  e.target.reset();
+}
+
+function handleRes(e) {
+  e.preventDefault();
+  document.getElementById('resDialog').close();
+  alert('Reservation confirmed! Can\'t wait to see you. 🎉');
+}
+
+// CHATBOT
+const chatFab = document.getElementById('chatFab');
+const chatBox = document.getElementById('chatBox');
+const chatFabNav = document.getElementById('chatFabNav');
+
+function toggleChat() {
+  chatBox.classList.toggle('open');
+  chatFab.querySelector('.chat-badge').style.display = 'none';
+}
+
+chatFab.addEventListener('click', toggleChat);
+chatFabNav.addEventListener('click', toggleChat);
+document.getElementById('chatCloseBtn').addEventListener('click', () => chatBox.classList.remove('open'));
+
+const bots = {
+  hours: 'Our hours are:\n🕐 Mon–Fri: 7am–6pm\n🕐 Saturday: 8am–5pm\n🕐 Sunday: 9am–4pm',
+  menu: 'We have ☕ Coffee & Drinks, 🍰 Bakery & Desserts, and 🥪 Fresh Food! Check the menu section above for details.',
+  catering: '🎉 Yes! We offer sandwich trays, wrap trays, scone platters, and custom cakes.\n\n⏰ 48 hours notice needed for large orders.',
+  location: '📍 We\'re at 123 Maple Street! Free parking nearby.\n\nClick "Get Directions" on the Visit section!',
+  scones: '🍞 Our scones are baked fresh every morning in seasonal flavours — $3.95 each!',
+  coffee: '☕ We have espresso, cappuccino, latte, matcha latte & chai latte. From $3.50. Oat milk available!',
+  cake: '🎂 Carrot cake is our house classic! Plus New York cheesecake and weekly rotating specials.',
+  reserve: '📅 You can book a table using the "Reserve a Table" button at the top, or just walk in!',
+  default: 'Great question! Browse our menu section or call us at (555) 123-4567. We\'d love to help! ☕'
+};
+
+function getBotReply(msg) {
+  const m = msg.toLowerCase();
+  if (m.includes('hour') || m.includes('open') || m.includes('close')) return bots.hours;
+  if (m.includes('menu') || m.includes('food') || m.includes('eat')) return bots.menu;
+  if (m.includes('cater')) return bots.catering;
+  if (m.includes('location') || m.includes('where') || m.includes('direction') || m.includes('get there')) return bots.location;
+  if (m.includes('scone')) return bots.scones;
+  if (m.includes('coffee') || m.includes('latte') || m.includes('cappuccino') || m.includes('matcha')) return bots.coffee;
+  if (m.includes('cake') || m.includes('carrot') || m.includes('dessert')) return bots.cake;
+  if (m.includes('reserv') || m.includes('book') || m.includes('table')) return bots.reserve;
+  return bots.default;
+}
+
+function addChatMsg(text, type) {
+  const d = document.createElement('div');
+  d.className = `cmsg cmsg-${type}`;
+  d.style.whiteSpace = 'pre-line';
+  d.textContent = text;
+  const msgs = document.getElementById('chatMsgs');
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function cSend() {
+  const input = document.getElementById('chatTxt');
+  const text = input.value.trim();
+  if (!text) return;
+  addChatMsg(text, 'user');
+  input.value = '';
+  document.getElementById('chatChips').style.display = 'none';
+  setTimeout(() => addChatMsg(getBotReply(text), 'bot'), 700);
+}
+
+function qSend(text) {
+  addChatMsg(text, 'user');
+  document.getElementById('chatChips').style.display = 'none';
+  setTimeout(() => addChatMsg(getBotReply(text), 'bot'), 700);
+}
+</script>
+</body>
+</html>
